@@ -100,3 +100,10 @@ Authentification et sessions, permissions, protocole de synchronisation, migrati
 3. Petits commits au format Conventional Commits (`feat:`, `fix:`, `test:`…) avec une description en français et les identifiants d'exigences, par exemple `feat(sync): lot idempotent (EF-OFF-04)`.
 4. Toute décision technique non prévue par le cdc, ou qui s'en écarte, fait l'objet d'un ADR dans `docs/adr/NNNN-titre.md` (contexte, décision, alternatives, conséquences).
 5. Avant de déclarer une tâche terminée : lint et tests verts, schéma OpenAPI régénéré, et ce fichier mis à jour si nécessaire.
+
+## Environnement de développement
+
+- Poste Windows 11 + WSL2 (Ubuntu), dépôt cloné dans le système de fichiers Linux (~/projets/havilah-sitecheck).
+- Docker Desktop avec intégration WSL2 ; toutes les commandes se lancent depuis le terminal Ubuntu.
+- Laragon est installé côté Windows et peut occuper les ports 80/443/3306 : en local, exposer Nginx sur 8080 et ne pas publier PostgreSQL sur 3306 ni 5432 côté hôte sans nécessité.
+- Fins de ligne LF imposées par `.gitattributes`.
