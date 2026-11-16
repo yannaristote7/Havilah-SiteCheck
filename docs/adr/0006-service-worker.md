@@ -1,7 +1,7 @@
 # 0006 — Service Worker et routage en export statique
 
 - **Date** : 2026-10-27
-- **Statut** : proposée
+- **Statut** : acceptée
 - **Exigences concernées** : EF-OFF-01, EF-OFF-05, §11, §13.1 du cdc
 
 ## Contexte
