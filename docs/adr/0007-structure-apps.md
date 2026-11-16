@@ -1,7 +1,7 @@
 # 0007 — Apps Django supplémentaires : core, files, probe
 
 - **Date** : 2026-10-27
-- **Statut** : proposée
+- **Statut** : acceptée
 - **Exigences concernées** : §13, §14 du cdc ; structure cible de CLAUDE.md
 
 ## Contexte
@@ -24,3 +24,13 @@ CLAUDE.md liste les apps `accounts`, `sites`, `templates`, `inspections`, `anoma
 
 - CLAUDE.md sera mis à jour avec ces apps.
 - La suppression de `probe` en phase 3 sera traitée comme une migration sensible (données de test uniquement).
+
+## Tâche planifiée
+
+**Phase 3 — suppression de l'app `probe`**, tâche explicite du plan de la phase 3, à réaliser une fois que les inspections et les anomalies couvrent la preuve hors ligne :
+
+1. Vérifier qu'aucune `ProbeNote` n'est en attente sur un appareil de test (file vide) et qu'aucune donnée de production n'en dépend.
+2. Retirer le handler `probe_note.create` du registre de `apps/sync` ; les opérations de ce type encore reçues sont refusées (`rejected`, `unknown_operation_type`).
+3. Supprimer les écrans `/probe`, les tables Dexie et les tests e2e associés (migration Dexie versionnée).
+4. Migration Django de suppression des tables de `probe`, présentée pour validation avant d'être écrite (migration qui supprime des données).
+5. Retirer `apps.probe` de `INSTALLED_APPS`, régénérer le schéma OpenAPI et le client TypeScript, mettre à jour CLAUDE.md.
