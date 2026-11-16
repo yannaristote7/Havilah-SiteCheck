@@ -1,7 +1,7 @@
 # 0005 — Modèle de permissions rôle × site
 
 - **Date** : 2026-10-27
-- **Statut** : proposée
+- **Statut** : acceptée
 - **Exigences concernées** : EF-AUT-05, EF-REF-05, AC-01, AC-10, §6, §16.1 du cdc
 
 ## Contexte
@@ -16,6 +16,7 @@ Les permissions sont vérifiées côté serveur, sur chaque requête et sur chaq
 4. Toute vue passe par `SiteScopedQuerySet.for_user(user, action)` et par la classe DRF `SiteRolePermission(action)`, qui vérifie aussi chaque objet. `Model.objects.all()` est interdit dans les vues.
 5. Codes de réponse : anonyme → 401 ou 403 ; objet d'un site non autorisé → **404** (on ne révèle pas son existence) ; site autorisé mais rôle insuffisant → **403**.
 6. Un **harnais de tests négatifs** paramétré couvre chaque endpoint (anonyme, autre site, rôle insuffisant). Un test transverse échoue si une route de l'API n'y est pas déclarée.
+7. **`IncidentPerson` n'est jamais enregistré dans l'administration Django**, ni comme modèle ni comme inline d'un autre modèle (`Incident` compris). Un test parcourt `admin.site._registry` et les inlines de chaque `ModelAdmin` et échoue s'il y trouve `IncidentPerson`. Le test est écrit dès la phase 1 (il passe tant que le modèle n'existe pas) pour qu'il soit en place quand le modèle arrivera en phase 4.
 
 ## Alternatives étudiées
 
@@ -27,4 +28,5 @@ Les permissions sont vérifiées côté serveur, sur chaque requête et sur chaq
 
 - Changer la matrice du §6 revient à modifier un seul fichier, couvert par des tests.
 - Chaque nouvel endpoint doit être déclaré dans le harnais, sinon la CI échoue.
+- Les données `IncidentPerson` ne sont consultables que par l'API, avec les rôles autorisés ; l'administrateur technique ne peut pas les voir par l'administration Django.
 - L'administrateur technique doit disposer d'un autre compte, avec appartenances, s'il doit consulter des données opérationnelles.
