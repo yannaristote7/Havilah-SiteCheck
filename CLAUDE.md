@@ -19,7 +19,7 @@ Application web mobile (PWA hors ligne) d'inspection terrain, de remontée des a
 | Backend | Python, Django LTS, Django REST Framework, drf-spectacular (OpenAPI) |
 | Base | PostgreSQL |
 | Tâches de fond | Redis + Celery + Celery Beat (**obligatoires**) |
-| Fichiers | Stockage objet compatible S3 (MinIO en local), bucket privé, URL pré-signées |
+| Fichiers | Stockage objet compatible S3 (Garage en local et pour le pilote, ADR 0002), bucket privé, URL pré-signées |
 | Infra | Docker Compose, Nginx, GitHub Actions |
 
 Frontend et API sont servis sur **la même origine** : application à la racine, API sous `/api/v1/`. Il n'y a donc pas de CORS.
@@ -57,7 +57,7 @@ Cette structure peut évoluer, mais par un ADR.
 - Toute écriture terrain passe par la file d'opérations IndexedDB. Chaque opération porte un **`Idempotency-Key`** et est envoyée par lot à `POST /api/v1/sync/push`. Rejouer un lot ne doit créer aucun doublon.
 - Ne compte **pas** sur la Background Sync API, qui ne fonctionne pas sur iOS. La synchronisation se déclenche à l'ouverture, à l'événement `online` et périodiquement tant que l'application est ouverte.
 - Photos : redimensionnement à 1 600 px maximum sur le côté le plus long, ré-encodage par canvas (ce qui **supprime l'EXIF et donc le GPS**), cible de 150 à 350 Ko. Téléversement par URL pré-signée **avant** de référencer la pièce jointe.
-- **Ne supprime jamais automatiquement une donnée non synchronisée.**
+- **Ne supprime jamais automatiquement une donnée non synchronisée.** Seule exception : l'ordre de purge d'une révocation immédiate de l'appareil (ou d'une synchronisation finale expirée), journalisé côté serveur (ADR 0004, EF-AUT-04 amendé).
 - Conflits : jamais d'écrasement silencieux. Une transition refusée par le serveur part dans la liste « À résoudre ».
 - Une fonctionnalité hors ligne n'est terminée qu'après un test sur un vrai téléphone Android **et** un vrai iPhone (application installée sur l'écran d'accueil).
 
